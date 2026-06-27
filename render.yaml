@@ -13,7 +13,7 @@ services:
       - key: GROQ_MODEL
         value: llama-3.3-70b-versatile
       - key: EMBEDDING_MODEL
-        value: all-MiniLM-L6-v2
+        value: BAAI/bge-small-en-v1.5
       - key: CHUNK_SIZE
         value: "1200"
       - key: CHUNK_OVERLAP
@@ -23,4 +23,4 @@ services:
       - key: LLM_TIMEOUT_SECONDS
         value: "60"
       - key: PYTHON_VERSION
-        value: "3.11.0"
+        value: "3.11.4"
