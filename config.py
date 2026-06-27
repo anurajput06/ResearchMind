@@ -7,15 +7,15 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 CACHE_DIR = BASE_DIR / ".faiss_cache"
 
-# LLM - Groq (primary, fast, free tier generous)
+# LLM — Groq
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-# Tavily for web search (general research mode)
+# Web search — Tavily
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
-# Embeddings
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+# Embedding model (fastembed ONNX — ~40MB RAM)
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
 
 # Chunking
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1200"))
