@@ -14,6 +14,9 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 # Web search — Tavily
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
+# Embedding model (fastembed ONNX — ~40MB RAM)
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
+
 # Chunking
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1200"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "180"))
