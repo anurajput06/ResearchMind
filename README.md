@@ -188,10 +188,10 @@ ResearchMind/
 
 | | TF-IDF (this app) | sentence-transformers |
 |--|--|--|
-| RAM | ~30MB ✅ | ~450MB ❌ |
-| Free tier | Works ✅ | OOM crash ❌ |
-| Install | ~15MB ✅ | ~1.3GB ❌ |
-| Quality | 85% ✅ | 95% |
+| RAM | ~30MB  | ~450MB  |
+| Free tier | Works  | OOM crash  |
+| Install | ~15MB  | ~1.3GB  |
+| Quality | 85% | 95% |
 
 Since Groq LLM generates the actual research content, embeddings only need to find relevant chunks — TF-IDF is completely sufficient and lets the app run on free-tier servers.
 
