@@ -822,9 +822,9 @@ def tab_architecture():
         st.markdown('<div class="rm-card"><div class="rm-card-title">🔧 Runtime status</div>',unsafe_allow_html=True)
         from config import GROQ_API_KEY,TAVILY_API_KEY,GROQ_MODEL
         checks=[("Groq LLM",bool(GROQ_API_KEY),GROQ_MODEL),
-                ("Tavily Search",bool(TAVILY_API_KEY),"Web search"),
-                ("FAISS Vector DB",True,"CPU index"),
-                ("SentenceTransformers",True,"all-MiniLM-L6-v2")]
+        ("Tavily Search",bool(TAVILY_API_KEY),"Web search"),
+        ("Numpy Vector Store",True,"In-memory dot product"),
+        ("TF-IDF Embeddings",True,"scikit-learn")]
         for name,ok,detail in checks:
             c=("var(--green)" if ok else "var(--red)")
             bg=("var(--green-bg)" if ok else "var(--red-bg)")
