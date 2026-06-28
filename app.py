@@ -472,10 +472,13 @@ def retrieve_ctx(query,top_k,mode):
     ag=get_agents()
     vs=st.session_state.vector_store if mode=="pdf" else st.session_state.general_vector_store
     if not vs: return st.session_state.last_context[:6000]
+    _set("Retriever","Running")
     q_emb=ag["embedding"].embed_query(query)
     chunks=ag["retriever"].retrieve(vs,q_emb,top_k=top_k)
     ctx="\n\n".join(c.text for c in chunks)
-    st.session_state.last_context=ctx; return ctx
+    st.session_state.last_context=ctx
+    _set("Retriever","Done")
+    return ctx
 
 def create_plan():
     ag=get_agents(); topic=st.session_state.topic; mode=st.session_state.mode
