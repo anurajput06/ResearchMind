@@ -439,7 +439,7 @@ def process_pdf(uploaded_file):
         _set("Embedding","Running"); prog.progress(55,"Generating embeddings…")
         embeddings=ag["embedding"].embed_documents([c.text for c in chunks])
         _set("Embedding","Done")
-        _set("Vector Store","Running"); prog.progress(80,"Building FAISS index…")
+        _set("Vector Store","Running"); prog.progress(80,"Building vector index…")
         vs=ag["vector_store"].build_or_load(r.document_key,chunks,embeddings)
         st.session_state.vector_store=vs
         _set("Vector Store",f"Ready ({vs.index.ntotal} vectors)")
@@ -842,10 +842,10 @@ def tab_architecture():
             </div>""",unsafe_allow_html=True)
         st.markdown('</div>',unsafe_allow_html=True)
         st.markdown('<div class="rm-card"><div class="rm-card-title">🗺️ Pipeline flow</div>',unsafe_allow_html=True)
-        flow=("User → PDF Reader → Chunking → Embedding\n→ FAISS → Retriever → Planner\n→ Research → Summarizer → Report PDF\n→ Retriever → Chat Agent → Answer"
-              if mode=="pdf" else
-              "User → Web Search (Tavily) → Chunking\n→ Embedding → FAISS → Retriever\n→ Planner → Research → Summarizer → Report PDF\n→ Retriever → Chat Agent → Answer")
-        st.code(flow,language=None)
+        if mode=="pdf":
+            flow="User → PDF Reader → Chunking → TF-IDF Embedding\n→ Vector Store (numpy) → Retriever → Planner (Groq)\n→ Research (Groq) → Summarizer (Groq) → Report PDF"
+        else:
+            flow="User → Web Search (Tavily) → Chunking → TF-IDF Embedding\n→ Vector Store (numpy) → Retriever → Planner (Groq)\n→ Research (Groq) → Summarizer (Groq) → Report PDF"
         st.markdown('</div>',unsafe_allow_html=True)
 
 

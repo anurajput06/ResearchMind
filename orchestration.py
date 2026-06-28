@@ -6,16 +6,16 @@ from typing import Dict, List, Optional, TypedDict
 
 
 AGENT_ROLES = [
-    {"name": "PDF Reader Agent", "goal": "Extract reliable text from uploaded PDFs.", "backstory": "Document ingestion specialist."},
-    {"name": "Chunking Agent", "goal": "Split documents into overlapping context-preserving chunks.", "backstory": "Context manager for retrieval quality."},
-    {"name": "Embedding Agent", "goal": "Generate cached semantic embeddings.", "backstory": "Vectorization expert."},
-    {"name": "Vector Store Agent", "goal": "Build and maintain FAISS indexes.", "backstory": "Memory manager for semantic search."},
-    {"name": "Web Search Agent", "goal": "Fetch real-time web information for general research.", "backstory": "Live intelligence gatherer."},
-    {"name": "Retriever Agent", "goal": "Find the most relevant chunks for each query.", "backstory": "Search specialist."},
-    {"name": "Planner Agent", "goal": "Create structured research plans.", "backstory": "Research strategist."},
-    {"name": "Research Agent", "goal": "Generate detailed, grounded research sections.", "backstory": "Domain writer and analyst."},
-    {"name": "Summarizer Agent", "goal": "Compress research into executive summaries.", "backstory": "Precision editor."},
-    {"name": "Chat Agent", "goal": "Answer questions grounded in source material.", "backstory": "Conversational research assistant."},
+    {"name": "PDF Reader Agent", "goal": "Extract and parse text from uploaded PDF documents.", "backstory": "Document ingestion specialist using pypdf."},
+    {"name": "Chunking Agent", "goal": "Split documents into overlapping context-preserving chunks.", "backstory": "Ensures no context is lost at chunk boundaries."},
+    {"name": "Embedding Agent", "goal": "Generate TF-IDF vector embeddings for lightweight semantic search.", "backstory": "Uses scikit-learn — no GPU, no heavy ML frameworks needed."},
+    {"name": "Vector Store Agent", "goal": "Build and query in-memory numpy vector indexes.", "backstory": "Pure numpy dot-product similarity — zero extra RAM overhead."},
+    {"name": "Web Search Agent", "goal": "Fetch real-time web results via Tavily API with citations.", "backstory": "Live intelligence gatherer with source attribution."},
+    {"name": "Retriever Agent", "goal": "Find the most relevant chunks for each query using cosine similarity.", "backstory": "Top-k semantic search — fast and accurate."},
+    {"name": "Planner Agent", "goal": "Create structured, context-aware 6-section research plans.", "backstory": "Research strategist powered by Groq LLM."},
+    {"name": "Research Agent", "goal": "Generate detailed, grounded research reports from retrieved context.", "backstory": "Domain writer and analyst powered by Groq LLM."},
+    {"name": "Summarizer Agent", "goal": "Compress research into executive summaries with recommendations.", "backstory": "Precision editor powered by Groq LLM."},
+    {"name": "Chat Agent", "goal": "Answer questions strictly grounded in source material.", "backstory": "Conversational research assistant powered by Groq LLM."},
 ]
 
 
@@ -121,7 +121,7 @@ def build_architecture_mermaid(mode: str = "pdf") -> str:
     UI --> PDF[📄 PDF Reader Agent]
     PDF --> CH[✂️ Chunking Agent]
     CH --> EM[🔢 Embedding Agent]
-    EM --> VS[🗄️ FAISS Vector Store]
+    EM --> VS[🗄️ Vector Store (numpy)]
     VS --> RT[🔍 Retriever Agent]
     RT --> PL[📋 Planner Agent]
     PL --> RS[✍️ Research Agent]
@@ -133,7 +133,9 @@ def build_architecture_mermaid(mode: str = "pdf") -> str:
     U[👤 User] --> UI[Streamlit UI]
     UI --> WS[🌐 Web Search Agent]
     WS --> TV[Tavily API]
-    TV --> RT[🔍 Retriever Agent]
+    TV --> CH2[✂️ Chunking]
+    CH2 --> EM2[🔢 TF-IDF Embedding]
+    EM2 --> RT[🔍 Retriever Agent]
     RT --> PL[📋 Planner Agent]
     PL --> RS[✍️ Research Agent]
     RS --> SM[📊 Summarizer Agent]

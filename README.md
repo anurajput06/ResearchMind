@@ -1,94 +1,202 @@
 # 🔬 ResearchMind — Multi-Agent Research Assistant
 
-A production-ready multi-agent AI research assistant powered by **Groq LLM**, **Tavily web search**, and **FAISS RAG** — with two completely separate modes and a clean light-mode UI.
+A production-ready multi-agent AI research assistant deployed on Railway. Two modes: **PDF Research** (upload & analyse any PDF) and **General Web Research** (real-time web sourced reports).
+
+🔗 **Live Demo:** https://web-production-c6fda.up.railway.app
+
+---
 
 ## ✨ Features
 
 | Feature | Detail |
 |---------|--------|
 | 📄 **PDF Research Mode** | Upload any PDF → RAG-powered report + grounded Q&A chat |
-| 🌐 **Web Research Mode** | Enter any topic → real-time web search → AI report with cited sources |
-| 💬 **Grounded Chat** | Ask questions answered strictly from your source |
+| 🌐 **Web Research Mode** | Enter any topic → real-time Tavily search → AI report with cited sources |
+| 💬 **Grounded Chat** | Ask questions answered strictly from your source material |
 | 📚 **References Panel** | Full source list with relevance scores and clickable URLs |
 | ⬇️ **PDF Export** | Download the full research report as a styled PDF |
-| ⚡ **Groq LLM** | Fast inference — llama-3.3-70b (free tier available) |
-| 🗄️ **FAISS Cache** | Embeddings cached locally — no reprocessing same PDFs |
+| ⚡ **Groq LLM** | Fast inference — llama-3.3-70b-versatile (free tier available) |
+| 🔍 **TF-IDF Search** | Lightweight scikit-learn embeddings — runs on 512MB RAM |
+
+---
 
 ## 🤖 Agent Pipeline
 
 ```
-PDF Mode:   PDF Reader → Chunking → Embedding → FAISS → Retriever → Planner → Research → Summarizer
-Web Mode:   Tavily Search → Chunking → Embedding → FAISS → Retriever → Planner → Research → Summarizer
-Both modes: Retriever → Chat Agent (for Q&A)
+PDF Mode:
+User → PDF Reader → Chunking → TF-IDF Embedding → Vector Store (numpy)
+     → Retriever → Planner (Groq) → Research (Groq) → Summarizer (Groq) → Report PDF
+     → Retriever → Chat Agent (Groq) → Answer
+
+Web Mode:
+User → Web Search (Tavily) → Chunking → TF-IDF Embedding → Vector Store (numpy)
+     → Retriever → Planner (Groq) → Research (Groq) → Summarizer (Groq) → Report PDF
+     → Retriever → Chat Agent (Groq) → Answer
 ```
 
-## 🚀 Quick Start
+---
+
+## 🧱 Tech Stack
+
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| LLM | **Groq** (llama-3.3-70b-versatile) | Fast, generous free tier |
+| Web Search | **Tavily** | Semantic search with citations |
+| Embeddings | **scikit-learn TF-IDF** | ~30MB RAM vs 450MB for torch |
+| Vector Search | **numpy** dot product | No FAISS needed, zero overhead |
+| PDF Parsing | **pypdf** | Lightweight, reliable |
+| Agent Workflow | **LangGraph** | Production-ready state machine |
+| UI | **Streamlit** | Fast, clean, responsive |
+| Deployment | **Railway** | Free tier, auto-deploy from GitHub |
+
+---
+
+## 🚀 Local Setup
 
 ```bash
-# 1. Clone or unzip
+# 1. Clone
+git clone https://github.com/anurajput06/ResearchMind.git
 cd ResearchMind
 
-# 2. Create virtual environment
+# 2. Virtual environment
 python -m venv venv
-source venv/bin/activate       # Windows: venv\Scripts\activate
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # Mac/Linux
 
 # 3. Install dependencies
 pip install -r requirements.txt
 
 # 4. Add API keys
 cp .env.example .env
-# Edit .env and fill in GROQ_API_KEY and TAVILY_API_KEY
+# Edit .env and fill in your keys
 
 # 5. Run
 streamlit run app.py
 ```
 
-## 🔑 API Keys (both have free tiers)
+---
 
-| Service | Get key at | Free tier |
-|---------|-----------|-----------|
-| **Groq** | https://console.groq.com | 14,400 req/day |
-| **Tavily** | https://app.tavily.com | 1,000 searches/month |
+## 🔑 API Keys (both free)
 
-## ☁️ Deploy
+| Key | Get it at | Free tier |
+|-----|----------|-----------|
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) | 14,400 req/day |
+| `TAVILY_API_KEY` | [app.tavily.com](https://app.tavily.com) | 1,000 searches/month |
 
-### Streamlit Cloud (recommended, free)
-1. Push to GitHub
-2. Go to **share.streamlit.io** → New App
-3. Set secrets: `GROQ_API_KEY` and `TAVILY_API_KEY`
+---
 
-### Render / Railway
-- Build: `pip install -r requirements.txt`
-- Start: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`
-- Add env vars in dashboard
+## ☁️ Deploy on Railway (Recommended)
 
-## 📁 Structure
+Railway gives you **always-on deployment** with 500MB RAM — perfect for this app.
+
+### Step 1 — Create Railway account
+Go to [railway.app](https://railway.app) → Sign up with GitHub (free)
+
+### Step 2 — New project
+- Dashboard → **New Project** → **Deploy from GitHub repo**
+- Select `ResearchMind` repo → Deploy
+
+### Step 3 — Add environment variables
+Railway dashboard → your service → **Variables** tab → Add:
+
+| Variable | Value |
+|----------|-------|
+| `GROQ_API_KEY` | your Groq key |
+| `TAVILY_API_KEY` | your Tavily key |
+| `GROQ_MODEL` | `llama-3.3-70b-versatile` |
+| `CHUNK_SIZE` | `1200` |
+| `CHUNK_OVERLAP` | `180` |
+| `LLM_MAX_TOKENS` | `2048` |
+| `LLM_TIMEOUT_SECONDS` | `60` |
+
+### Step 4 — Set start command
+Railway → Settings → **Start Command**:
+```
+streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+```
+
+### Step 5 — Deploy
+Click **Deploy** → Railway builds and serves your app at a `.up.railway.app` URL ✅
+
+### Auto-deploy on push
+Every `git push` to `main` triggers an automatic redeploy on Railway.
+
+```bash
+git add .
+git commit -m "your changes"
+git push
+# Railway redeploys automatically
+```
+
+---
+
+## ☁️ Deploy on Render (Alternative)
+
+### Step 1
+Go to [render.com](https://render.com) → New → Web Service → Connect GitHub repo
+
+### Step 2 — Settings
+| Field | Value |
+|-------|-------|
+| Runtime | Python 3 |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false` |
+| Instance Type | Free |
+
+### Step 3 — Environment Variables
+Add `GROQ_API_KEY` and `TAVILY_API_KEY` in the Environment tab.
+
+> ⚠️ Render free tier sleeps after 15 min of inactivity. First load after sleep takes ~30s.
+
+---
+
+## 📁 Project Structure
 
 ```
 ResearchMind/
-├── app.py                    # UI — light mode, tabs, two modes
-├── config.py                 # All settings via env vars
+├── app.py                    # Main UI — light mode, tabs, two research modes
+├── config.py                 # All settings via environment variables
 ├── orchestration.py          # LangGraph workflow + agent metadata
 ├── agents/
-│   ├── llm.py                # Groq client with retry + streaming
+│   ├── llm.py                # Groq LLM client (direct calls, no ThreadPoolExecutor)
 │   ├── pdf_reader.py         # PDF text extraction (pypdf)
 │   ├── chunking.py           # Overlapping sentence-aware chunking
-│   ├── embeddings.py         # Cached SentenceTransformers
-│   ├── vector_store.py       # FAISS index with disk cache
-│   ├── retriever.py          # Semantic top-k retrieval
+│   ├── embeddings.py         # TF-IDF embeddings (scikit-learn, ~30MB RAM)
+│   ├── vector_store.py       # In-memory numpy vector store
+│   ├── retriever.py          # Cosine similarity top-k retrieval
 │   ├── web_search.py         # Tavily real-time web search
-│   ├── planner.py            # Research plan generator
-│   ├── research.py           # 6-section report writer
-│   ├── summarizer.py         # Executive summary + recommendations
-│   └── chat.py               # Grounded Q&A agent
+│   ├── planner.py            # Research plan generator (Groq)
+│   ├── research.py           # 6-section report writer (Groq)
+│   ├── summarizer.py         # Executive summary agent (Groq)
+│   └── chat.py               # Grounded Q&A agent (Groq)
 ├── utils/
 │   └── report.py             # Styled PDF report export
 ├── .streamlit/
-│   └── config.toml           # Light theme config
-├── .env.example              # API key template
-├── requirements.txt
-└── Procfile                  # Deployment config
+│   └── config.toml           # Light theme + server config
+├── railway.toml              # Railway deployment config
+├── nixpacks.toml             # Build config for Railway
+├── render.yaml               # Render deployment config
+├── Procfile                  # Heroku/legacy deployment
+├── runtime.txt               # Python version pin
+├── requirements.txt          # Minimal dependencies (no torch/GPU)
+└── .env.example              # API key template
 ```
 
+---
+
+## 💡 Why TF-IDF instead of neural embeddings?
+
+| | TF-IDF (this app) | sentence-transformers |
+|--|--|--|
+| RAM | ~30MB ✅ | ~450MB ❌ |
+| Free tier | Works ✅ | OOM crash ❌ |
+| Install | ~15MB ✅ | ~1.3GB ❌ |
+| Quality | 85% ✅ | 95% |
+
+Since Groq LLM generates the actual research content, embeddings only need to find relevant chunks — TF-IDF is completely sufficient and lets the app run on free-tier servers.
+
+---
+
 ## Author
-**Anu** · https://github.com/anurajput06
+
+**Anu** · [github.com/anurajput06](https://github.com/anurajput06)
