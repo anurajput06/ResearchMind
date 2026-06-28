@@ -167,23 +167,37 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
 .rm-upload-title{font-size:0.88rem;font-weight:700;color:var(--brand);margin-bottom:4px;}
 .rm-upload-sub{font-size:0.72rem;color:var(--sub);}
 
-/* Hide ONLY the native Streamlit upload button text duplication */
-[data-testid="stFileUploader"]{position:relative!important;}
-[data-testid="stFileUploader"] label,
-[data-testid="stFileUploader"] [data-testid="stWidgetLabel"]{
-  display:none!important;visibility:hidden!important;height:0!important;margin:0!important;padding:0!important;}
-/* Make the actual dropzone invisible but functional, overlaid on our custom zone */
+/* ── FILE UPLOADER — real functional styling ── */
+[data-testid="stFileUploader"] label [data-testid="stMarkdownContainer"] p{
+  font-size:0.82rem!important;font-weight:700!important;color:var(--brand)!important;
+}
 [data-testid="stFileUploaderDropzone"],
 [data-testid="stFileUploadDropzone"]{
-  position:absolute!important;inset:0!important;
-  opacity:0!important;cursor:pointer!important;
-  border:none!important;background:transparent!important;
-  z-index:10!important;
+  background:var(--brand-light)!important;
+  border:1.5px dashed var(--brand-mid)!important;
+  border-radius:12px!important;
+  padding:24px 20px!important;
+  text-align:center!important;
+  transition:all 0.2s!important;
 }
-[data-testid="stFileUploadDropzone"] *,
-[data-testid="stFileUploaderDropzone"] *{
-  opacity:0!important;pointer-events:none!important;
+[data-testid="stFileUploaderDropzone"]:hover,
+[data-testid="stFileUploadDropzone"]:hover{
+  border-color:var(--brand)!important;
+  background:#E4E8FF!important;
+  box-shadow:0 0 0 4px rgba(79,70,229,0.1)!important;
 }
+[data-testid="stFileUploadDropzone"] button,
+[data-testid="stFileUploaderDropzone"] button{
+  background:var(--brand)!important;color:#fff!important;
+  border-radius:8px!important;border:none!important;
+  font-weight:700!important;font-size:0.78rem!important;
+  padding:6px 16px!important;margin-top:8px!important;
+}
+[data-testid="stFileUploadDropzone"] span,
+[data-testid="stFileUploaderDropzone"] span{
+  color:var(--sub)!important;font-size:0.78rem!important;
+}
+.rm-upload-zone{display:none!important;}
 
 /* ── FILE BADGE ── */
 .rm-file-badge{
@@ -575,19 +589,13 @@ def render_mode_switcher():
 def tab_workspace_pdf():
     left,right=st.columns([1,1.85],gap="large")
     with left:
-        # Custom upload zone with invisible Streamlit uploader overlaid
-        st.markdown("""
-        <div class="rm-card">
-          <div class="rm-card-title">📄 Source document</div>
-          <div class="rm-upload-zone" id="upload-zone">
-            <span class="rm-upload-icon">📂</span>
-            <div class="rm-upload-title">Click or drag & drop your PDF</div>
-            <div class="rm-upload-sub">Maximum file size: 50 MB</div>
-          </div>
-        </div>
-        """,unsafe_allow_html=True)
-        # The actual Streamlit uploader — positioned over the zone via CSS
-        uploaded=st.file_uploader("pdf",type=["pdf"],label_visibility="collapsed",key="pdf_up")
+        st.markdown('<div class="rm-card"><div class="rm-card-title">📄 Source document</div>',unsafe_allow_html=True)
+        uploaded=st.file_uploader(
+            "📂 Click or drag & drop your PDF here",
+            type=["pdf"],
+            key="pdf_up",
+            help="Maximum file size: 50 MB",
+        )
         if uploaded:
             st.markdown(f"""
             <div class="rm-file-badge">
@@ -841,6 +849,14 @@ def tab_architecture():
 # ── MAIN ───────────────────────────────────────────────────────────────────────
 _init()
 render_nav()
+
+# ── API KEY CHECK ──
+from config import GROQ_API_KEY, TAVILY_API_KEY
+if not GROQ_API_KEY:
+    st.error("⚠️ **GROQ_API_KEY is not set.** Add it in Railway → Variables tab. Get free key at [console.groq.com](https://console.groq.com)", icon="🔑")
+if not TAVILY_API_KEY:
+    st.warning("⚠️ **TAVILY_API_KEY is not set.** Web Research won't work. Get free key at [app.tavily.com](https://app.tavily.com)", icon="🌐")
+
 render_mode_switcher()
 
 tabs=st.tabs(["🏠 Workspace","💬 Chat","📚 References","🏗️ Architecture"])
