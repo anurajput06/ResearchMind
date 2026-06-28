@@ -846,6 +846,7 @@ def tab_architecture():
             flow="User → PDF Reader → Chunking → TF-IDF Embedding\n→ Vector Store (numpy) → Retriever → Planner (Groq)\n→ Research (Groq) → Summarizer (Groq) → Report PDF"
         else:
             flow="User → Web Search (Tavily) → Chunking → TF-IDF Embedding\n→ Vector Store (numpy) → Retriever → Planner (Groq)\n→ Research (Groq) → Summarizer (Groq) → Report PDF"
+        st.markdown(f'<div class="rm-section-text" style="white-space: pre-wrap;">{flow}</div>', unsafe_allow_html=True)
         st.markdown('</div>',unsafe_allow_html=True)
 
 
