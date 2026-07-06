@@ -24,12 +24,12 @@ st.set_page_config(
 # ── GLOBAL CSS ─────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
-html,body,*{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;box-sizing:border-box;}
+html,body,*{font-family:'Manrope','Inter',-apple-system,BlinkMacSystemFont,sans-serif!important;box-sizing:border-box;}
 
 :root{
-  --bg:#F3F4FF;
+  --bg:#F6F7FB;
   --white:#FFFFFF;
   --card:#FFFFFF;
   --border:#E4E7FF;
@@ -37,16 +37,16 @@ html,body,*{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!impo
   --text:#111827;
   --sub:#6B7280;
   --muted:#9CA3AF;
-  --brand:#4F46E5;
+  --brand:#2563EB;
   --brand-light:#EEF2FF;
   --brand-mid:#C7D2FE;
-  --brand-dark:#3730A3;
+  --brand-dark:#1E40AF;
   --green:#059669;
   --green-bg:#ECFDF5;
   --green-bd:#6EE7B7;
   --red:#DC2626;
   --red-bg:#FEF2F2;
-  --purple:#7C3AED;
+  --purple:#0F766E;
   --purple-bg:#F5F3FF;
   --amber:#D97706;
   --shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
@@ -77,8 +77,8 @@ html,body,*{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif!impo
   box-shadow:0 2px 8px rgba(79,70,229,0.35);
 }
 .rm-brand{display:flex;align-items:center;gap:12px;}
-.rm-title{font-size:1.05rem;font-weight:800;color:var(--text);letter-spacing:-0.3px;}
-.rm-sub{font-size:0.67rem;color:var(--sub);font-weight:500;margin-top:1px;}
+.rm-title{font-size:1.18rem;font-weight:900;color:var(--text);letter-spacing:0;}
+.rm-sub{font-size:0.76rem;color:var(--sub);font-weight:600;margin-top:1px;}
 .rm-badge{
   display:flex;align-items:center;gap:6px;
   background:var(--brand-light);border:1px solid var(--brand-mid);
@@ -148,7 +148,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
   box-shadow:var(--shadow-sm);
 }
 .rm-card-title{
-  font-size:0.62rem;font-weight:800;color:var(--muted);
+  font-size:0.72rem;font-weight:900;color:var(--muted);
   text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;
   display:flex;align-items:center;gap:6px;
 }
@@ -253,7 +253,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
   padding:3px 9px;background:var(--brand-light);border-radius:20px;
   display:inline-block;margin-bottom:9px;
 }
-.rm-section-text{font-size:0.85rem;color:var(--text);line-height:1.75;}
+.rm-section-text{font-size:0.98rem;color:var(--text);line-height:1.78;}
 
 /* ── SUMMARY ── */
 .rm-summary{
@@ -266,7 +266,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
   text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px;
   display:flex;align-items:center;gap:6px;
 }
-.rm-summary-text{font-size:0.85rem;color:var(--text);line-height:1.75;}
+.rm-summary-text{font-size:1rem;color:var(--text);line-height:1.78;}
 
 /* ── REFERENCES ── */
 .rm-ref{
@@ -310,7 +310,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
 .rm-msg-body{flex:1;}
 .rm-msg-role{font-size:0.6rem;font-weight:800;color:var(--muted);
   text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
-.rm-msg-text{font-size:0.83rem;color:var(--text);line-height:1.65;
+.rm-msg-text{font-size:0.96rem;color:var(--text);line-height:1.7;
   background:var(--bg);padding:9px 13px;border-radius:10px;}
 .rm-msg.u .rm-msg-text{background:var(--brand-light);color:var(--text);}
 
@@ -349,7 +349,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
 .stTextInput input,.stTextArea textarea{
   background:var(--bg)!important;color:var(--text)!important;
   border:1.5px solid var(--border)!important;border-radius:9px!important;
-  font-size:0.85rem!important;padding:9px 12px!important;
+  font-size:0.96rem!important;padding:11px 13px!important;
   box-shadow:none!important;transition:border-color 0.15s,box-shadow 0.15s!important;
 }
 .stTextInput input:focus,.stTextArea textarea:focus{
@@ -361,8 +361,8 @@ div[data-testid="stTabs"] [data-baseweb="tab-panel"]{
   font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.07em!important;
 }
 .stButton>button{
-  border-radius:9px!important;font-weight:700!important;font-size:0.82rem!important;
-  height:40px!important;border:none!important;transition:all 0.18s!important;
+  border-radius:9px!important;font-weight:800!important;font-size:0.94rem!important;
+  height:44px!important;border:none!important;transition:all 0.18s!important;
   letter-spacing:-0.1px!important;
 }
 .stButton>button[kind="primary"]{
@@ -442,7 +442,7 @@ def process_pdf(uploaded_file):
         _set("Vector Store","Running"); prog.progress(80,"Building vector index…")
         vs=ag["vector_store"].build_or_load(r.document_key,chunks,embeddings)
         st.session_state.vector_store=vs
-        _set("Vector Store",f"Ready ({vs.index.ntotal} vectors)")
+        _set("Vector Store",f"Ready ({vs.ntotal} vectors)")
         prog.progress(100,"✅ Ready!")
         return True
     except Exception as e:
@@ -473,7 +473,7 @@ def retrieve_ctx(query,top_k,mode):
     vs=st.session_state.vector_store if mode=="pdf" else st.session_state.general_vector_store
     if not vs: return st.session_state.last_context[:6000]
     _set("Retriever","Running")
-    q_emb=ag["embedding"].embed_query(query)
+    q_emb=ag["embedding"].embed_query(query, vs.vocabulary, vs.idf)
     chunks=ag["retriever"].retrieve(vs,q_emb,top_k=top_k)
     ctx="\n\n".join(c.text for c in chunks)
     st.session_state.last_context=ctx
@@ -636,7 +636,7 @@ def tab_workspace_pdf():
         st.markdown('</div>',unsafe_allow_html=True)
 
     with right:
-        vc=st.session_state.vector_store.index.ntotal if st.session_state.vector_store else 0
+        vc=st.session_state.vector_store.ntotal if st.session_state.vector_store else 0
         fname=st.session_state.last_pdf_name or "—"
         st.markdown(f"""
         <div class="rm-metrics">
@@ -696,7 +696,7 @@ def tab_workspace_general():
 
     with right:
         ns=len(st.session_state.web_results); nc=len(st.session_state.general_chunks)
-        vs=st.session_state.general_vector_store; nv=vs.index.ntotal if vs else 0
+        vs=st.session_state.general_vector_store; nv=vs.ntotal if vs else 0
         st.markdown(f"""
         <div class="rm-metrics">
           <div class="rm-metric"><div class="rm-metric-label">Web sources</div><div class="rm-metric-val">{ns}</div></div>
@@ -742,7 +742,7 @@ def tab_chat():
     q=st.chat_input("Ask a question about your source…")
     if q:
         st.session_state.chat_history.append({"role":"user","content":q})
-        q_emb=ag["embedding"].embed_query(q)
+        q_emb=ag["embedding"].embed_query(q, vs.vocabulary, vs.idf)
         chunks=ag["retriever"].retrieve(vs,q_emb,top_k=st.session_state.top_k)
         ans=ag["chat"].answer(q,chunks,mode=mode)
         txt=ans.text if ans.ok else "Could not generate a response. Please try again."
@@ -824,7 +824,7 @@ def tab_architecture():
         checks=[("Groq LLM",bool(GROQ_API_KEY),GROQ_MODEL),
         ("Tavily Search",bool(TAVILY_API_KEY),"Web search"),
         ("Numpy Vector Store",True,"In-memory dot product"),
-        ("TF-IDF Embeddings",True,"scikit-learn")]
+        ("TF-IDF Embeddings",True,"custom NumPy")]
         for name,ok,detail in checks:
             c=("var(--green)" if ok else "var(--red)")
             bg=("var(--green-bg)" if ok else "var(--red-bg)")

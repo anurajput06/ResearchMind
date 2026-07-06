@@ -1,21 +1,26 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+if load_dotenv:
+    load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
-CACHE_DIR = BASE_DIR / ".faiss_cache"
+CACHE_DIR = BASE_DIR / ".cache"
 
-# LLM — Groq
+# LLM - Groq
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-# Web search — Tavily
+# Web search - Tavily
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
-# Embedding model (fastembed ONNX — ~40MB RAM)
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
+# Lightweight TF-IDF retrieval
+TFIDF_MAX_FEATURES = int(os.getenv("TFIDF_MAX_FEATURES", "4096"))
 
 # Chunking
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1200"))

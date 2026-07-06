@@ -1,45 +1,97 @@
 """
-Lightweight embedding agent using fastembed (ONNX runtime).
-Uses ~50MB RAM vs ~450MB for sentence-transformers+PyTorch.
-Perfect for Render free tier (512MB limit).
+Tiny TF-IDF embedding agent for memory-constrained deployments.
+
+This avoids FastEmbed/ONNX model loading and keeps Railway/Render free-tier
+memory usage predictable. Each vector store keeps its own vocabulary so PDF
+and web research can be queried independently.
 """
-from typing import Iterable, List
+from collections import Counter
+from dataclasses import dataclass
+import math
+import re
+from typing import Dict, Iterable, List
 
 import numpy as np
-import streamlit as st
+
+from config import TFIDF_MAX_FEATURES
 
 
-@st.cache_resource(show_spinner="Loading embedding model…")
-def load_embedding_model():
-    from fastembed import TextEmbedding
-    # BAAI/bge-small-en-v1.5 — 384-dim, ~40MB, fast ONNX
-    return TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
+TOKEN_RE = re.compile(r"[a-zA-Z][a-zA-Z0-9_'-]{1,}")
+
+
+@dataclass
+class EmbeddingResult:
+    matrix: np.ndarray
+    vocabulary: Dict[str, int]
+    idf: np.ndarray
 
 
 class EmbeddingAgent:
-    def __init__(self):
-        self._model = None
+    def __init__(self, max_features: int = TFIDF_MAX_FEATURES):
+        self.max_features = max_features
 
-    @property
-    def model(self):
-        if self._model is None:
-            self._model = load_embedding_model()
-        return self._model
+    def _tokens(self, text: str) -> List[str]:
+        return [token.lower() for token in TOKEN_RE.findall(text)]
 
-    def embed_documents(self, texts: Iterable[str]) -> np.ndarray:
+    def embed_documents(self, texts: Iterable[str]) -> EmbeddingResult:
         items = list(texts)
         if not items:
-            return np.empty((0, 384), dtype="float32")
-        embeddings = list(self.model.embed(items))
-        result = np.array(embeddings, dtype="float32")
-        # Normalize for cosine similarity
-        norms = np.linalg.norm(result, axis=1, keepdims=True)
-        norms = np.where(norms == 0, 1, norms)
-        return (result / norms).astype("float32")
+            return EmbeddingResult(
+                matrix=np.empty((0, 0), dtype="float32"),
+                vocabulary={},
+                idf=np.empty((0,), dtype="float32"),
+            )
 
-    def embed_query(self, text: str) -> np.ndarray:
-        embeddings = list(self.model.embed([text]))
-        result = np.array(embeddings, dtype="float32")
-        norms = np.linalg.norm(result, axis=1, keepdims=True)
+        tokenized = [self._tokens(text) for text in items]
+        document_frequency: Counter[str] = Counter()
+        corpus_frequency: Counter[str] = Counter()
+        for tokens in tokenized:
+            counts = Counter(tokens)
+            corpus_frequency.update(counts)
+            document_frequency.update(counts.keys())
+
+        terms = [
+            term
+            for term, _ in corpus_frequency.most_common(self.max_features)
+            if document_frequency[term] > 0
+        ]
+        vocabulary = {term: index for index, term in enumerate(terms)}
+        if not vocabulary:
+            return EmbeddingResult(
+                matrix=np.empty((len(items), 0), dtype="float32"),
+                vocabulary={},
+                idf=np.empty((0,), dtype="float32"),
+            )
+
+        doc_count = len(items)
+        idf = np.array(
+            [math.log((1 + doc_count) / (1 + document_frequency[term])) + 1 for term in terms],
+            dtype="float32",
+        )
+        matrix = np.zeros((doc_count, len(vocabulary)), dtype="float32")
+
+        for row, tokens in enumerate(tokenized):
+            counts = Counter(token for token in tokens if token in vocabulary)
+            for token, count in counts.items():
+                matrix[row, vocabulary[token]] = math.log1p(count)
+
+        matrix *= idf
+        return EmbeddingResult(matrix=self._normalize(matrix), vocabulary=vocabulary, idf=idf)
+
+    def embed_query(self, text: str, vocabulary: Dict[str, int], idf: np.ndarray) -> np.ndarray:
+        if not vocabulary:
+            return np.empty((1, 0), dtype="float32")
+
+        vector = np.zeros((1, len(vocabulary)), dtype="float32")
+        counts = Counter(token for token in self._tokens(text) if token in vocabulary)
+        for token, count in counts.items():
+            vector[0, vocabulary[token]] = math.log1p(count)
+        vector *= idf
+        return self._normalize(vector)
+
+    def _normalize(self, matrix: np.ndarray) -> np.ndarray:
+        if matrix.size == 0:
+            return matrix.astype("float32")
+        norms = np.linalg.norm(matrix, axis=1, keepdims=True)
         norms = np.where(norms == 0, 1, norms)
-        return (result / norms).astype("float32")
+        return (matrix / norms).astype("float32")

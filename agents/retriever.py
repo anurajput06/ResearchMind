@@ -15,15 +15,15 @@ class RetrievedChunk:
 
 class RetrieverAgent:
     def retrieve(self, vector_store: VectorStore, query_embedding: np.ndarray, top_k: int = 4) -> List[RetrievedChunk]:
-        k = min(top_k, vector_store.index.ntotal)
+        k = min(top_k, vector_store.ntotal)
         if k <= 0:
             return []
 
-        scores, indexes = vector_store.index.search(query_embedding, k)
+        scores = (vector_store.embeddings @ query_embedding.T).ravel()
+        indexes = np.argsort(scores)[::-1][:k]
         results = []
-        for score, idx in zip(scores[0], indexes[0]):
-            if idx == -1:
-                continue
+        for idx in indexes:
+            score = scores[int(idx)]
             chunk = vector_store.chunks[int(idx)]
             results.append(RetrievedChunk(text=chunk.text, score=float(score), chunk_id=chunk.id))
         return results

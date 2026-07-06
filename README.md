@@ -16,7 +16,7 @@ A production-ready multi-agent AI research assistant deployed on Railway. Two mo
 | 📚 **References Panel** | Full source list with relevance scores and clickable URLs |
 | ⬇️ **PDF Export** | Download the full research report as a styled PDF |
 | ⚡ **Groq LLM** | Fast inference — llama-3.3-70b-versatile (free tier available) |
-| 🔍 **TF-IDF Search** | Lightweight scikit-learn embeddings — runs on 512MB RAM |
+| 🔍 **TF-IDF Search** | Tiny NumPy-based retrieval — runs on 512MB RAM |
 
 ---
 
@@ -42,7 +42,7 @@ User → Web Search (Tavily) → Chunking → TF-IDF Embedding → Vector Store 
 |-------|-----------|-----|
 | LLM | **Groq** (llama-3.3-70b-versatile) | Fast, generous free tier |
 | Web Search | **Tavily** | Semantic search with citations |
-| Embeddings | **scikit-learn TF-IDF** | ~30MB RAM vs 450MB for torch |
+| Embeddings | **Custom TF-IDF** | No model download, no torch, predictable RAM |
 | Vector Search | **numpy** dot product | No FAISS needed, zero overhead |
 | PDF Parsing | **pypdf** | Lightweight, reliable |
 | Agent Workflow | **LangGraph** | Production-ready state machine |
@@ -161,7 +161,7 @@ ResearchMind/
 │   ├── llm.py                # Groq LLM client (direct calls, no ThreadPoolExecutor)
 │   ├── pdf_reader.py         # PDF text extraction (pypdf)
 │   ├── chunking.py           # Overlapping sentence-aware chunking
-│   ├── embeddings.py         # TF-IDF embeddings (scikit-learn, ~30MB RAM)
+│   ├── embeddings.py         # Custom TF-IDF embeddings
 │   ├── vector_store.py       # In-memory numpy vector store
 │   ├── retriever.py          # Cosine similarity top-k retrieval
 │   ├── web_search.py         # Tavily real-time web search
@@ -173,13 +173,10 @@ ResearchMind/
 │   └── report.py             # Styled PDF report export
 ├── .streamlit/
 │   └── config.toml           # Light theme + server config
-├── railway.toml              # Railway deployment config
-├── nixpacks.toml             # Build config for Railway
 ├── render.yaml               # Render deployment config
 ├── Procfile                  # Heroku/legacy deployment
 ├── runtime.txt               # Python version pin
 ├── requirements.txt          # Minimal dependencies (no torch/GPU)
-└── .env.example              # API key template
 ```
 
 ---

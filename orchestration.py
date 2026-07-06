@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, TypedDict
 AGENT_ROLES = [
     {"name": "PDF Reader Agent", "goal": "Extract and parse text from uploaded PDF documents.", "backstory": "Document ingestion specialist using pypdf."},
     {"name": "Chunking Agent", "goal": "Split documents into overlapping context-preserving chunks.", "backstory": "Ensures no context is lost at chunk boundaries."},
-    {"name": "Embedding Agent", "goal": "Generate TF-IDF vector embeddings for lightweight semantic search.", "backstory": "Uses scikit-learn — no GPU, no heavy ML frameworks needed."},
+    {"name": "Embedding Agent", "goal": "Generate TF-IDF vector embeddings for lightweight semantic search.", "backstory": "Custom NumPy TF-IDF — no GPU, no heavy ML frameworks needed."},
     {"name": "Vector Store Agent", "goal": "Build and query in-memory numpy vector indexes.", "backstory": "Pure numpy dot-product similarity — zero extra RAM overhead."},
     {"name": "Web Search Agent", "goal": "Fetch real-time web results via Tavily API with citations.", "backstory": "Live intelligence gatherer with source attribution."},
     {"name": "Retriever Agent", "goal": "Find the most relevant chunks for each query using cosine similarity.", "backstory": "Top-k semantic search — fast and accurate."},
