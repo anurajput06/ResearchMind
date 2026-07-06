@@ -609,7 +609,6 @@ def tab_workspace_pdf():
               </div>
             </div>""",unsafe_allow_html=True)
 
-        st.markdown('<div class="rm-card"><div class="rm-card-title">⚙️ Settings</div>',unsafe_allow_html=True)
         topic=st.text_input("Research topic",value=st.session_state.topic,
                             placeholder="e.g. Machine Learning in Healthcare",key="t_pdf")
         if topic!=st.session_state.topic: st.session_state.topic=topic
