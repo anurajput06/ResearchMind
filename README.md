@@ -2,7 +2,9 @@
 
 A production-ready multi-agent AI research assistant deployed on Railway. Two modes: **PDF Research** (upload & analyse any PDF) and **General Web Research** (real-time web sourced reports).
 
-🔗 **Live Demo:** https://web-production-c6fda.up.railway.app
+🔗 ** Railway Live Demo:** https://web-production-c6fda.up.railway.app
+🔗 ** Render Live Demo:** https://researchmind-87w1.onrender.com/
+
 
 ---
 
