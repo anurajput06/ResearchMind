@@ -14,7 +14,6 @@ def build_research_pdf(
     mode: str = "general",
 ) -> bytes:
     from fpdf import FPDF
-
     pdf = FPDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=20)
