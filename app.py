@@ -634,7 +634,6 @@ def tab_workspace_pdf():
         if st.button("🚀 Run Full Pipeline",use_container_width=True,type="primary",key="btn_fp"):
             run_full(uploaded_file=uploaded); st.rerun()
         st.markdown('</div>',unsafe_allow_html=True)
-
     with right:
         vc=st.session_state.vector_store.ntotal if st.session_state.vector_store else 0
         fname=st.session_state.last_pdf_name or "—"
@@ -653,7 +652,6 @@ def tab_workspace_pdf():
         _pipeline_bar()
         st.markdown('</div>',unsafe_allow_html=True)
         _render_report("pdf")
-
 
 # ── WORKSPACE: GENERAL ─────────────────────────────────────────────────────────
 def tab_workspace_general():
