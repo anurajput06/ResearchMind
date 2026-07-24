@@ -10,7 +10,6 @@ class SummarizerAgent(GroqAgentMixin):
 
 Research Content:
 {content}
-
 Additional Context:
 {context[:2000]}
 
