@@ -12,7 +12,6 @@ Research Content:
 {content}
 Additional Context:
 {context[:2000]}
-
 Write:
 1. A 2-sentence overview
 2. 5 key findings (bullet points)
