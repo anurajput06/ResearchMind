@@ -5,15 +5,12 @@ from agents.llm import GroqAgentMixin
 SYSTEM = """You are a senior research analyst and technical writer. 
 Write detailed, evidence-based research sections. 
 Ground all claims in the provided context. Be thorough and insightful."""
-
 @dataclass
 class ResearchResult:
     ok: bool
     sections: Dict[str, str]
     error: str = ""
-
 SECTIONS = ["Introduction", "Core Concepts", "Applications & Use Cases", "Advantages", "Challenges & Limitations", "Future Directions"]
-
 class ResearchAgent(GroqAgentMixin):
     def research(self, topic: str, plan: str, context: str, mode: str = "general") -> ResearchResult:
         source = "web sources" if mode == "general" else "the uploaded PDF"
