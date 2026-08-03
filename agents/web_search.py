@@ -8,7 +8,6 @@ from typing import List
 import streamlit as st
 
 from config import TAVILY_API_KEY
-
 @dataclass
 class SearchResult:
     title: str
